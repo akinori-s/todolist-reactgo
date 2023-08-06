@@ -6,7 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var todos = []models.Todo{} // In-memory store for now for simplicity
+var todos = []models.Todo{
+	{ID: 1, Task: "Buy milk", Status: false},
+	{ID: 2, Task: "Buy eggs", Status: false},
+} // In-memory store for now for simplicity
 
 func GetTodos(c *gin.Context) {
 	c.JSON(http.StatusOK, todos)

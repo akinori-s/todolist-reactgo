@@ -8,7 +8,10 @@ import (
 
 func main() {
 	r := gin.Default()
-	r.Use(cors.Default())
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:5173"}
+	config.AllowCredentials = true
+	r.Use(cors.New(config))
 
 	r.GET("/todos", handlers.GetTodos)
 	r.POST("/todos/add", handlers.AddTodo)
