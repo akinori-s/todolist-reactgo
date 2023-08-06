@@ -15,7 +15,8 @@ func main() {
 
 	r.GET("/todos", handlers.GetTodos)
 	r.POST("/todos/add", handlers.AddTodo)
-	// wip: Add routes for updating, deleting later
+	r.DELETE("/todos/:id", handlers.DeleteTodo)
+	r.PUT("/todos/:id", handlers.UpdateTodo)
 
 	r.Run(":8080")
 }
