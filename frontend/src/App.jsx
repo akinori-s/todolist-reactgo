@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getTodoList } from './api/todoApi'
+import { addTodo, getTodoList, updateTodo, deleteTodo } from './api/todoApi'
 import './App.css'
 
 
@@ -11,7 +11,6 @@ function App() {
 		async function getTodos() {
 			try {
 				const data = await getTodoList();
-				console.log(data);
 				setTodos(data);
 			} catch (error) {
 				console.error("Failed to fetch todos:", error);
@@ -20,23 +19,49 @@ function App() {
 		getTodos();
 	}, []);
 
-	const handleAddTodo = () => {
-    const todoText = newTodo.trim();
+	const handleAddTodo = async () => {
+		const todoText = newTodo.trim();
 		const newId = todos.length + 1;
 		if (newTodo.trim()) {
-			setTodos([...todos, {id: newId, text: todoText, completed: false}]);
-			setNewTodo('');
+			const todo = {id: newId, text: todoText, completed: false};
+			try {
+				const response = await addTodo(todo);
+				setTodos([...todos, response]);
+				setNewTodo('');
+			} catch (error) {
+				console.error('Failed to add todo:', error);
+			}
 		}
 	};
 
-	const handleDeleteTodo = (id) => {
-		setTodos(todos.filter(todo => todo.id !== id));
+	const handleDeleteTodo = async (id) => {
+    try {
+      await deleteTodo(id);
+      setTodos(todos.filter(todo => todo.id !== id));
+    } catch (error) {
+      console.error('Failed to delete todo:', error);
+    }
   };
 
+	const handleUpdateTodo = async (id, updatedValues) => {
+		try {
+			const response = await updateTodo(updatedValues);
+			const updatedTodos = todos.map(todo => 
+				todo.id === id ? response : todo
+			);
+			setTodos(updatedTodos);
+		} catch (error) {
+			console.error("Error updating todo:", error);
+		}
+};
+
 	const toggleCompletion = (index) => {
-		const updatedTodos = [...todos];
-		updatedTodos[index].completed = !updatedTodos[index].completed;
-		setTodos(updatedTodos);
+		const todo = todos.find(t => t.id === index);
+		if (todo) {
+				const updatedTodo = { ...todo, completed: !todo.completed };
+				handleUpdateTodo(index, updatedTodo);
+		}
+		console.log(todos);
 	};
 
 	return (
@@ -47,12 +72,12 @@ function App() {
 				<button className="border rounded-md px-2 py-1 bg-blue-500 text-white hover:bg-blue-600" onClick={handleAddTodo}>Add</button>
 			</div>
       <ul className="list-decimal list-inside h-1/2 w-1/2 min-w-[300px] max-w-[500px] overflow-y-auto border rounded-md">
-        {todos.map((todo, index) => (
-          <li key={index} className="flex justify-between items-center py-2 px-4 border-b last:border-0 hover:bg-gray-50 w-full">
+        {todos.map((todo) => (
+          <li key={todo.id} className="flex justify-between items-center py-2 px-4 border-b last:border-0 hover:bg-gray-50 w-full">
 						<div className="flex items-center flex-grow">
 							<button 
 								className={`mr-4 p-[5px] ${todo.completed ? 'bg-green-500' : 'bg-red-500'} rounded`} 
-								onClick={() => toggleCompletion(index)}
+								onClick={() => toggleCompletion(todo.id)}
 							/>
 							<span className={`${todo.completed ? 'line-through' : ''} break-all whitespace-normal`}>{todo.text}</span>
   					</div>
