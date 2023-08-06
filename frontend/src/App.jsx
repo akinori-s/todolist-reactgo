@@ -1,12 +1,24 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { getTodoList } from './api/todoApi'
 import './App.css'
 
+
 function App() {
-	const [todos, setTodos] = useState([
-		{ id: 1, text: "Tasdddddddddddddddddddddddddddddssssssssssss dddddddddddsk 1", completed: false },
-		{ id: 2, text: "Task 2", completed: false },
-	]);
+	const [todos, setTodos] = useState([]);
 	const [newTodo, setNewTodo] = useState('');
+
+	useEffect(() => {
+		async function getTodos() {
+			try {
+				const data = await getTodoList();
+				console.log(data);
+				setTodos(data);
+			} catch (error) {
+				console.error("Failed to fetch todos:", error);
+			}
+		}
+		getTodos();
+	}, []);
 
 	const handleAddTodo = () => {
     const todoText = newTodo.trim();
@@ -15,7 +27,6 @@ function App() {
 			setTodos([...todos, {id: newId, text: todoText, completed: false}]);
 			setNewTodo('');
 		}
-		console.log(todos);
 	};
 
 	const handleDeleteTodo = (id) => {
