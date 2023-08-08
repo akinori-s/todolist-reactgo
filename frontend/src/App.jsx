@@ -58,8 +58,8 @@ function App() {
 	const toggleCompletion = (index) => {
 		const todo = todos.find(t => t.id === index);
 		if (todo) {
-				const updatedTodo = { ...todo, completed: !todo.completed };
-				handleUpdateTodo(index, updatedTodo);
+			const updatedTodo = { ...todo, completed: !todo.completed };
+			handleUpdateTodo(index, updatedTodo);
 		}
 	};
 
@@ -67,8 +67,18 @@ function App() {
 		<div className="flex flex-col items-center h-screen w-full py-20 space-y-8 min-w-[300px]">
 			<h1 className="text-2xl text-center">TodoList App</h1>
 			<div className="flex flex-row items-center space-x-4">
-				<input type="text" className="border rounded-md px-2 py-1 w-3/4" placeholder="Enter a task" value={newTodo} onChange={e => setNewTodo(e.target.value)}/>
-				<button className="border rounded-md px-2 py-1 bg-blue-500 text-white hover:bg-blue-600" onClick={handleAddTodo}>Add</button>
+				<input 
+					type="text" 
+					className="border rounded-md px-2 py-1 w-3/4" 
+					placeholder="Enter a task" 
+					value={newTodo} 
+					onChange={e => setNewTodo(e.target.value)}/>
+				<button 
+					className="border rounded-md px-2 py-1 bg-blue-500 text-white hover:bg-blue-600" 
+					onClick={handleAddTodo}
+				>
+					Add
+				</button>
 			</div>
 			<ul className="list-decimal list-inside h-1/2 w-1/2 min-w-[300px] max-w-[500px] overflow-y-auto border rounded-md">
 				{todos.map((todo) => (
@@ -80,7 +90,10 @@ function App() {
 							/>
 							<span className={`${todo.completed ? 'line-through' : ''} break-all whitespace-normal`}>{todo.text}</span>
 						</div>
-						<button className="px-2 py-1 bg-gray-200 text-white rounded hover:bg-red-400" onClick={() => handleDeleteTodo(todo.id)}>
+						<button 
+							className="px-2 py-1 bg-gray-200 text-white rounded hover:bg-red-400" 
+							onClick={() => handleDeleteTodo(todo.id)}
+						>
 							Delete
 						</button>
 					</li>
