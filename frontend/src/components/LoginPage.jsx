@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import useForm from '../hooks/useForm';
-import { login } from '../api/authService';
+import { login } from '../api/authApi';
 
 function LoginPage() {
-	const [values, handleChange] = useForm({ username: '', password: '' });
+	const [loginInfo, handleChange] = useForm({ username: '', password: '' });
 	const [error, setError] = useState(null);
 	
 	const handleSubmit = async () => {
 		setError(null);
-		console.log("Logging in with", values); // wip: remove later
+		console.log("Logging in with", loginInfo); // wip: remove later
 
 		try {
-			const response = await login(values.username, values.password);
+			const response = await login(loginInfo);
 			console.log("Logged in successfully!", response.data);
 			// wip: navigate to dashboard
 		} catch (err) {
@@ -26,14 +26,14 @@ function LoginPage() {
 			<p style={{ color: 'red' }}>{error}</p>
 			<input 
 				type="email" 
-				value={values.username}
+				value={loginInfo.username}
 				onChange={handleChange}
 				className="border rounded-md px-2 py-1 w-full" 
 				placeholder="Email Address"
 			/>
 			<input 
 				type="password" 
-				value={values.password}
+				value={loginInfo.password}
 				onChange={handleChange}
 				className="border rounded-md px-2 py-1 w-full" 
 				placeholder="Password"
