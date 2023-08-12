@@ -2,6 +2,7 @@ package app
 
 import (
 	"todolist/app/repositories"
+	"todolist/app/usecases"
 	"todolist/app/handlers"
 	"database/sql"
 	"github.com/gin-gonic/gin"
@@ -16,6 +17,10 @@ func NewApplication(db *sql.DB) *Application {
 
 	todoRepository := repositories.NewTodoRepository(db)
 	todoHandler := handlers.NewTodoHandler(*todoRepository)
+
+	authRepository := repositories.NewAuthRepository(db)
+	authUsecase := usecases.NewAuthUsecase(*authRepository)
+	authHandler := handlers.NewAuthHandler(*authUsecase)
 
 	router := gin.Default()
 	config := cors.DefaultConfig()
