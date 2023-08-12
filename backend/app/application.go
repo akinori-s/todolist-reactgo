@@ -27,6 +27,7 @@ func NewApplication(db *sql.DB) *Application {
 	router.POST("/todos/add", todoHandler.AddTodo)
 	router.DELETE("/todos/:id", todoHandler.DeleteTodo)
 	router.PUT("/todos/:id", todoHandler.UpdateTodo)
+	router.POST("/login", authHandler.Login)
 	
 	return &Application{
 		Router: router,

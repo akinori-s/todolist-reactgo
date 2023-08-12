@@ -4,6 +4,13 @@ CREATE TABLE todos (
 	Status BOOLEAN NOT NULL
 );
 
+CREATE TABLE users (
+	ID SERIAL PRIMARY KEY,
+	Username VARCHAR(50) NOT NULL UNIQUE CHECK (Username <> ''),
+	Email VARCHAR(100) NOT NULL UNIQUE CHECK (Email <> ''),
+	Password_hash CHAR(60) NOT NULL CHECK (Password_hash <> '')
+);
+
 INSERT INTO todos (Task, Status) VALUES ('Complete the Docker setup', false);
 INSERT INTO todos (Task, Status) VALUES ('Learn more about PostgreSQL', false);
 INSERT INTO todos (Task, Status) VALUES ('Integrate database with Go application', true);
