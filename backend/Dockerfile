@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY . .
 
+RUN go install github.com/cosmtrek/air@v1.44.0
+
 RUN go mod download
 
-CMD ["go", "run", "main.go"]
+CMD ["air"]
