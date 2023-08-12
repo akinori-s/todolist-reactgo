@@ -26,6 +26,7 @@ function LoginPage() {
 			<p style={{ color: 'red' }}>{error}</p>
 			<input 
 				type="email" 
+				name="username"
 				value={loginInfo.username}
 				onChange={handleChange}
 				className="border rounded-md px-2 py-1 w-full" 
@@ -33,6 +34,7 @@ function LoginPage() {
 			/>
 			<input 
 				type="password" 
+				name="password"
 				value={loginInfo.password}
 				onChange={handleChange}
 				className="border rounded-md px-2 py-1 w-full" 

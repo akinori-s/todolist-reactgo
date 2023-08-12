@@ -22,9 +22,9 @@ export const addTodo = async (todo) => {
 	try {
 		const response = await api.post('/todos/add', todo);
 		return response.data;
-		} catch (error) {
+	} catch (error) {
 		throw error.response.data;
-		}
+	}
 };
 
 export const updateTodo = async (todo) => {
