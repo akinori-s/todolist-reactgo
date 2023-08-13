@@ -3,7 +3,9 @@ package usecases
 import (
 	"todolist/app/models"
 	"todolist/app/repositories"
+	"todolist/app/utils"
 	"golang.org/x/crypto/bcrypt"
+	"errors"
 )
 
 type AuthUsecase struct {
@@ -17,7 +19,7 @@ func NewAuthUsecase(authRepository repositories.AuthRepository) *AuthUsecase {
 }
 
 func (u *AuthUsecase) Login(user *models.Auth) (string, error) {
-	dbUser, err := u.AuthRepository.GetUserByUsername(user.Username)
+	dbUser, err := u.AuthRepository.GetUserByEmail(user.Email)
 	if err != nil {
 		return "", err
 	}
@@ -37,4 +39,39 @@ func (u *AuthUsecase) Login(user *models.Auth) (string, error) {
 	*/
 
 	return "SUCCESS", nil
+}
+
+func (u *AuthUsecase) Signup(user *models.Auth) error {
+	if (user.FirstName == "" || user.LastName == "" || user.Email == "" || user.Password == "" || user.PasswordConfirmation == "") {
+		return errors.New("Please fill out all fields!")
+	}
+	if (!utils.IsValidEmail(user.Email)) {
+		return errors.New("Please enter a valid email address!")
+	}
+	if (len(user.Password) < 8) {
+		return errors.New("Password must be at least 8 characters long!")
+	}
+	if (user.Password != user.PasswordConfirmation) {
+		return errors.New("Passwords do not match!")
+	}
+
+	hashedPassword, err := hashPassword(user.Password)
+	if err != nil {
+		return err
+	}
+
+	newUser := models.Auth{
+		FirstName: user.FirstName,
+		LastName: user.LastName,
+		Email: user.Email,
+		PasswordHash: hashedPassword,
+	}
+
+	err = u.AuthRepository.CreateUser(&newUser)
+	return err
+}
+
+func hashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(bytes), err
 }

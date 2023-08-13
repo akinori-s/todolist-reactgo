@@ -1,15 +1,41 @@
 import React, { useState } from 'react';
+import { signup } from '../api/authApi';
 import useForm from '../hooks/useForm';
 
 function LoginPage() {
-	const [loginInfo, handleChange] = useForm({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '' });
+	const [loginInfo, handleChange] = useForm({ firstName: '', lastName: '', email: '', password: '', passwordConfirmation: '' });
 	const [error, setError] = useState(null);
-	
+
+	const validateEmail = (email) => {
+        const pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return pattern.test(email);
+    };
+
 	const handleSubmit = async () => {
 		setError(null);
 		console.log("Logging in with", loginInfo); // wip: remove later
 
+		if (loginInfo.firstName.length === 0 || 
+			loginInfo.lastName.length === 0 || 
+			loginInfo.email.length === 0 || 
+			loginInfo.password.length === 0) {
+			setError("Please fill out all fields!");
+			return;
+		}
+		if (!validateEmail(loginInfo.email)) {
+			setError("Please enter a valid email address!");
+			return;
+		}
+		if (loginInfo.password.length < 8) {
+			setError("Password must be at least 8 characters long!");
+			return;
+		}
+		if (loginInfo.password !== loginInfo.confirmPassword) {
+			setError("Passwords do not match!");
+			return;
+		}
 		try {
+			const response = await signup(loginInfo);
 			console.log("Logged in successfully!", response.data);
 			// wip: navigate to todo
 		} catch (err) {
@@ -56,8 +82,8 @@ function LoginPage() {
 			/>
 			<input 
 				type="password" 
-				name="confirmPassword" 
-				value={loginInfo.confirmPassword} 
+				name="passwordConfirmation" 
+				value={loginInfo.passwordConfirmation} 
 				onChange={handleChange} 
 				className="border rounded-md px-2 py-1 w-full" 
 				placeholder="Confirm Password"

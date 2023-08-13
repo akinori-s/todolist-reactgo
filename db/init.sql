@@ -6,7 +6,8 @@ CREATE TABLE todos (
 
 CREATE TABLE users (
 	ID SERIAL PRIMARY KEY,
-	Username VARCHAR(50) NOT NULL UNIQUE CHECK (Username <> ''),
+	FirstName VARCHAR(50) NOT NULL CHECK (FirstName <> ''),
+	LastName VARCHAR(50) NOT NULL CHECK (LastName <> ''),
 	Email VARCHAR(100) NOT NULL UNIQUE CHECK (Email <> ''),
 	Password_hash CHAR(60) NOT NULL CHECK (Password_hash <> '')
 );

@@ -17,3 +17,12 @@ export const login = async (loginInfo) => {
 		throw error.response.data;
 	}
 };
+
+export const signup = async (signupInfo) => {
+	try {
+		const response = await api.post(`/signup`, signupInfo);
+		return response.data;
+	} catch (error) {
+		throw error.response.data;
+	}
+}

@@ -2,7 +2,10 @@ package models
 
 type Auth struct {
 	ID				int		`json:"id"`
-	Username		string	`json:"username"`
+	FirstName		string	`json:"firstName"`
+	LastName		string	`json:"lastName"`
 	Email			string	`json:"email"`
-	PasswordHash	string	`json:"-"`
+	Password		string	`json:"password, omitempty"`
+	PasswordConfirmation	string	`json:"passwordConfirmation, omitempty"`
+	PasswordHash	string	`json:"-, omitempty"`
 }
