@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from "react-router-dom";
 import { signup } from '../api/authApi';
 import useForm from '../hooks/useForm';
 
@@ -97,12 +98,12 @@ function LoginPage() {
 		</div>
 		<div className="flex flex-row items-center space-x-4">
 			<p className="text-gray-500">Already have an account?</p>
-			<button 
-				className="border rounded-md px-4 py-2 bg-blue-500 text-white hover:bg-blue-600"
-				onClick={() => {/* Navigate to login page */}}
+			<Link 
+				to="/login" 
+				className="border rounded-md px-4 py-2 bg-blue-500 text-white hover:bg-blue-600" 
 			>
 				Login
-			</button>
+			</Link>
 		</div>
 	</div>	
 	);

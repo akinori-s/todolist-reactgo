@@ -1,35 +1,23 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import {
-	createBrowserRouter,
-	RouterProvider,
-} from "react-router-dom"
+import { Route, Routes, Link, BrowserRouter, useLocation } from "react-router-dom";
 import App from './App.jsx'
+import Header from './components/Header.jsx'
 import LoginPage from './components/LoginPage.jsx'
 import SignUpPage from './components/SignUpPage.jsx'
 import ErrorPage from './components/ErrorPage.jsx'
 import './index.css'
 
-const router = createBrowserRouter([
-	{
-		path: '/',
-		element: <App />,
-		errorElement: <ErrorPage />,
-	},
-	{
-		path: '/login',
-		element: <LoginPage />,
-		errorElement: <ErrorPage />,
-	},
-	{
-		path: '/signup',
-		element: <SignUpPage />,
-		errorElement: <ErrorPage />,
-	}
-])
-
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+	<BrowserRouter>
+		<Header />
+		<Routes>
+			<Route path="/" element={<App />} />
+			<Route path="/login" element={<LoginPage />} />
+			<Route path="/signup" element={<SignUpPage />} />
+			<Route path="*" element={<ErrorPage />} />
+		</Routes>
+	</BrowserRouter>
   </React.StrictMode>,
 )

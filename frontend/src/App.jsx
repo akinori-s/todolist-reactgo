@@ -64,17 +64,16 @@ function App() {
 	};
 
 	return (
-		<div className="flex flex-col items-center h-screen w-full py-20 space-y-8 min-w-[300px]">
-			<h1 className="text-2xl text-center">TodoList App</h1>
+		<div className="flex flex-col items-center h-screen w-full py-20 space-y-20 min-w-[300px]">
 			<div className="flex flex-row items-center space-x-4">
 				<input 
 					type="text" 
-					className="border rounded-md px-2 py-1 w-3/4" 
+					className="border rounded-md px-4 py-2 w-3/4" 
 					placeholder="Enter a task" 
 					value={newTodo} 
 					onChange={e => setNewTodo(e.target.value)}/>
 				<button 
-					className="border rounded-md px-2 py-1 bg-blue-500 text-white hover:bg-blue-600" 
+					className="border rounded-md px-4 py-2 bg-blue-500 text-white hover:bg-blue-600" 
 					onClick={handleAddTodo}
 				>
 					Add

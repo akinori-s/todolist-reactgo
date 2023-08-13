@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from "react-router-dom";
 import useForm from '../hooks/useForm';
 import { login } from '../api/authApi';
 
@@ -54,12 +55,12 @@ function LoginPage() {
 			>
 				Forgot Password?
 			</button>
-			<button 
+			<Link 
+				to="/signup"
 				className="border rounded-md px-4 py-2 bg-blue-500 text-white hover:bg-blue-600"
-				onClick={() => {/* wip: Handle Sign Up */}}
 			>
 				Sign Up
-			</button>
+			</Link>
 		</div>
 	</div>
 	);
