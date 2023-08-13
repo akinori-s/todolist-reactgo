@@ -4,7 +4,7 @@ import useForm from '../hooks/useForm';
 import { login } from '../api/authApi';
 
 function LoginPage() {
-	const [loginInfo, handleChange] = useForm({ username: '', password: '' });
+	const [loginInfo, handleChange] = useForm({ email: '', password: '' });
 	const [error, setError] = useState(null);
 	
 	const handleSubmit = async () => {
@@ -27,8 +27,8 @@ function LoginPage() {
 			<p style={{ color: 'red' }}>{error}</p>
 			<input 
 				type="email" 
-				name="username"
-				value={loginInfo.username}
+				name="email"
+				value={loginInfo.email}
 				onChange={handleChange}
 				className="border rounded-md px-2 py-1 w-full" 
 				placeholder="Email Address"
