@@ -24,9 +24,9 @@ func (u *AuthUsecase) Login(user *models.Auth) (string, error) {
 		return "", err
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(dbUser.PasswordHash), []byte(user.PasswordHash))
+	err = bcrypt.CompareHashAndPassword([]byte(dbUser.PasswordHash), []byte(user.Password))
 	if err != nil {
-		return "passwords dont match...", err
+		return "", errors.New("Invalid email or password.")
 	}
 
 	// wip: need to fix return vaue and manage JWT token.
@@ -37,8 +37,8 @@ func (u *AuthUsecase) Login(user *models.Auth) (string, error) {
 	3. if not match, return error
 	4. if match, create token and return token
 	*/
-
-	return "SUCCESS", nil
+	jwtToken, err := utils.CreateJWTToken(dbUser)
+	return jwtToken, err
 }
 
 func (u *AuthUsecase) Signup(user *models.Auth) (string, error) {

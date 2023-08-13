@@ -23,12 +23,13 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	token, err := h.AuthUsecase.Login(&user)
+	jwtToken, err := h.AuthUsecase.Login(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, token)
+	c.SetCookie("token", jwtToken, (60*60*24 * 7), "/", "localhost", false, true) 
+	c.JSON(http.StatusOK, gin.H{"message": "Login successful"})
 }
 
 func (h *AuthHandler) Signup(c *gin.Context) {

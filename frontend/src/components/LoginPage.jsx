@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useForm from '../hooks/useForm';
 import { login } from '../api/authApi';
 
 function LoginPage() {
-	const [loginInfo, handleChange] = useForm({ email: '', password: '' });
+	const [loginInfo, handleChange, resetForm] = useForm({ email: '', password: '' });
 	const [error, setError] = useState(null);
+	const navigate = useNavigate();
 	
 	const handleSubmit = async () => {
 		setError(null);
@@ -13,11 +14,12 @@ function LoginPage() {
 
 		try {
 			const response = await login(loginInfo);
-			console.log("Logged in successfully!", response.data);
-			// wip: navigate to dashboard
 		} catch (err) {
 			setError(err.message);
 		}
+		resetForm();
+		navigate("/");
+		console.log("Logged in successfully!", response.data);
 	};
 
 	return (
