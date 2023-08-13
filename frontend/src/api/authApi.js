@@ -35,3 +35,12 @@ export const checkLogin = async () => {
 		throw error.response.data;
 	}
 }
+
+export const signout = async () => {
+	try {
+		const response = await api.post(`/signout`);
+		return response.data;
+	} catch (error) {
+		throw error.response.data;
+	}
+}

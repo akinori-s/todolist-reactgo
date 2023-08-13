@@ -59,3 +59,8 @@ func (h *AuthHandler) CheckLogin(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, user)
 }
+
+func (h *AuthHandler) Signout(c *gin.Context) {
+	c.SetCookie("token", "", -1, "/", "localhost", false, true) 
+	c.JSON(http.StatusOK, gin.H{"message": "Signed out successfully."})
+}

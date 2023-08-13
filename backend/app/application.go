@@ -35,6 +35,7 @@ func NewApplication(db *sql.DB) *Application {
 	router.POST("/login", authHandler.Login)
 	router.POST("/signup", authHandler.Signup)
 	router.POST("/checkLogin", authHandler.CheckLogin)
+	router.POST("/signout", authHandler.Signout)
 	
 	return &Application{
 		Router: router,

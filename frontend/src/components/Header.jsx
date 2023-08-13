@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from '../contexts/AuthContext';
-import { checkLogin } from '../api/authApi';
+import { checkLogin, signout } from '../api/authApi';
 
 function Header() {
 	const location = useLocation()
+	const navigate = useNavigate();
 	const { user, setUser } = useAuth();
 
 	useEffect(() => {
@@ -24,8 +25,14 @@ function Header() {
 		doCheckLogin();
 	}, []);
 
-	function handleSignout() {
+	const handleSignout = async () => {
+		try {
+			const response = await signout();
+		} catch (error) {
+			console.error("Failed to sign out:", error);
+		}
 		setUser(null);
+		navigate("/login");
 		console.log("Signout successful");
 	}
 
