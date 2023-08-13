@@ -26,3 +26,12 @@ export const signup = async (signupInfo) => {
 		throw error.response.data;
 	}
 }
+
+export const checkLogin = async () => {
+	try {
+		const response = await api.post(`/checkLogin`);
+		return response.data;
+	} catch (error) {
+		throw error.response.data;
+	}
+}

@@ -5,6 +5,7 @@ import (
 	"todolist/app/models"
 	"time"
 	"regexp"
+	"errors"
 )
 
 var mySigningKey = []byte("very secret")
@@ -39,4 +40,24 @@ func CreateJWTToken(user *models.Auth) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	ss, err := token.SignedString(mySigningKey)
 	return ss, err
+}
+
+func ParseJWTToken(tokenString string) (*models.Auth, error) {
+	authClaim := &AuthClaim{}
+	token, err := jwt.ParseWithClaims(tokenString, authClaim, func(token *jwt.Token) (interface{}, error) {
+		return mySigningKey, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	if claims, ok := token.Claims.(*AuthClaim); ok && token.Valid {
+		user := new(models.Auth)
+		user.ID = claims.ID
+		user.FirstName = claims.FirstName
+		user.LastName = claims.LastName	
+		user.Email = claims.Email
+		return user, nil
+	}
+	return nil, errors.New("Invalid token")
+	
 }

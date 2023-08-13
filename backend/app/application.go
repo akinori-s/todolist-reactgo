@@ -34,6 +34,7 @@ func NewApplication(db *sql.DB) *Application {
 	router.PUT("/todos/:id", todoHandler.UpdateTodo)
 	router.POST("/login", authHandler.Login)
 	router.POST("/signup", authHandler.Signup)
+	router.POST("/checkLogin", authHandler.CheckLogin)
 	
 	return &Application{
 		Router: router,
