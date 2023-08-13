@@ -37,10 +37,11 @@ func (h *AuthHandler) Signup(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	err := h.AuthUsecase.Signup(&user)
+	jwtToken, err := h.AuthUsecase.Signup(&user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+	c.SetCookie("token", jwtToken, (60*60*24 * 7), "/", "localhost", false, true) 
 	c.JSON(http.StatusOK, "SUCCESS")
 }

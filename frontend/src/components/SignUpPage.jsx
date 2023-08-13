@@ -30,7 +30,7 @@ function LoginPage() {
 			setError("Password must be at least 8 characters long!");
 			return;
 		}
-		if (loginInfo.password !== loginInfo.confirmPassword) {
+		if (loginInfo.password !== loginInfo.passwordConfirmation) {
 			setError("Passwords do not match!");
 			return;
 		}
