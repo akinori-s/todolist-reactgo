@@ -48,7 +48,7 @@ func CreateJWTToken(user *models.Auth) (string, error) {
 	return ss, err
 }
 
-func ParseJWTToken(tokenString string) (*models.Auth, error) {
+func ParseJWTTokenToUser(tokenString string) (*models.Auth, error) {
 	authClaim := &AuthClaim{}
 	token, err := jwt.ParseWithClaims(tokenString, authClaim, func(token *jwt.Token) (interface{}, error) {
 		return mySigningKey, nil

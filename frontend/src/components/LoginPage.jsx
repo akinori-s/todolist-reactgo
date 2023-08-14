@@ -3,11 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import useForm from '../hooks/useForm';
 import { login } from '../api/authApi';
 import { validateEmail } from '../utils/utils';
+import { useAuth } from '../contexts/AuthContext';
 
 function LoginPage() {
 	const [loginInfo, handleChange, resetForm] = useForm({ email: '', password: '' });
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
+	const { user, setUser } = useAuth();
 	
 	const handleSubmit = async () => {
 		setError(null);
@@ -24,8 +26,10 @@ function LoginPage() {
 		}
 		try {
 			const response = await login(loginInfo);
+			setUser(response);
 		} catch (err) {
 			setError(err.message);
+			return;
 		}
 		resetForm();
 		navigate("/");

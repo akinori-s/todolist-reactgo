@@ -18,19 +18,21 @@ func NewAuthUsecase(authRepository repositories.AuthRepository) *AuthUsecase {
 	}
 }
 
-func (u *AuthUsecase) Login(user *models.Auth) (string, error) {
+func (u *AuthUsecase) Login(user *models.Auth) (string, *models.Auth, error) {
 	dbUser, err := u.AuthRepository.GetUserByEmail(user.Email)
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(dbUser.PasswordHash), []byte(user.Password))
 	if err != nil {
-		return "", errors.New("Invalid email or password.")
+		return "", nil, errors.New("Invalid email or password.")
 	}
 
 	jwtToken, err := utils.CreateJWTToken(dbUser)
-	return jwtToken, err
+	dbUser.ID = 0
+	dbUser.PasswordHash = ""
+	return jwtToken, dbUser, err
 }
 
 func (u *AuthUsecase) Signup(user *models.Auth) (string, error) {
@@ -71,6 +73,7 @@ func (u *AuthUsecase) Signup(user *models.Auth) (string, error) {
 }
 
 func (u *AuthUsecase) CheckLogin(tokenString string) (*models.Auth, error) {
-	user, err := utils.ParseJWTToken(tokenString)
+	user, err := utils.ParseJWTTokenToUser(tokenString)
+	user.ID = 0
 	return user, err
 }
