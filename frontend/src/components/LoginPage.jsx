@@ -9,7 +9,7 @@ function LoginPage() {
 	const [loginInfo, handleChange, resetForm] = useForm({ email: '', password: '' });
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
-	const { user, setUser } = useAuth();
+	const { setUser } = useAuth();
 	
 	const handleSubmit = async () => {
 		setError(null);

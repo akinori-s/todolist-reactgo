@@ -33,7 +33,6 @@ function Header() {
 		}
 		setUser(null);
 		navigate("/login");
-		console.log("Signout successful");
 	}
 
 	return (
