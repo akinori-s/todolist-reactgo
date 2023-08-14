@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signup } from '../api/authApi';
 import useForm from '../hooks/useForm';
+import { validateEmail } from '../utils/utils';
 
-function LoginPage() {
-	const [loginInfo, handleChange] = useForm({ firstName: '', lastName: '', email: '', password: '', passwordConfirmation: '' });
+function SignUpPage() {
+	const [loginInfo, handleChange, resetForm] = useForm({ firstName: '', lastName: '', email: '', password: '', passwordConfirmation: '' });
 	const [error, setError] = useState(null);
-
-	const validateEmail = (email) => {
-        const pattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-        return pattern.test(email);
-    };
+	const navigate = useNavigate();
 
 	const handleSubmit = async () => {
 		setError(null);
@@ -37,11 +34,11 @@ function LoginPage() {
 		}
 		try {
 			const response = await signup(loginInfo);
-			console.log("Logged in successfully!", response.data);
-			// wip: navigate to todo
 		} catch (err) {
 			setError(err.message);
 		}
+		resetForm();
+		navigate("/");
 	};
 
 	return (
@@ -109,4 +106,4 @@ function LoginPage() {
 	);
 }
 
-export default LoginPage;
+export default SignUpPage;
