@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import useForm from '../hooks/useForm';
 import { login } from '../api/authApi';
+import { validateEmail } from '../utils/utils';
 
 function LoginPage() {
 	const [loginInfo, handleChange, resetForm] = useForm({ email: '', password: '' });
@@ -12,6 +13,15 @@ function LoginPage() {
 		setError(null);
 		console.log("Logging in with", loginInfo); // wip: remove later
 
+		if (loginInfo.email.length === 0 || 
+			loginInfo.password.length === 0) {
+			setError("Please fill out all fields!");
+			return;
+		}
+		if (!validateEmail(loginInfo.email)) {
+			setError("Please enter a valid email address!");
+			return;
+		}
 		try {
 			const response = await login(loginInfo);
 		} catch (err) {
@@ -19,7 +29,6 @@ function LoginPage() {
 		}
 		resetForm();
 		navigate("/");
-		console.log("Logged in successfully!", response.data);
 	};
 
 	return (
