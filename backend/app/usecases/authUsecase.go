@@ -29,14 +29,6 @@ func (u *AuthUsecase) Login(user *models.Auth) (string, error) {
 		return "", errors.New("Invalid email or password.")
 	}
 
-	// wip: need to fix return vaue and manage JWT token.
-
-	/*
-	1. get user password with user.Username
-	2. compare user.Password with user.Password
-	3. if not match, return error
-	4. if match, create token and return token
-	*/
 	jwtToken, err := utils.CreateJWTToken(dbUser)
 	return jwtToken, err
 }
@@ -57,7 +49,7 @@ func (u *AuthUsecase) Signup(user *models.Auth) (string, error) {
 		return jwtToken, errors.New("Passwords do not match!")
 	}
 
-	hashedPassword, err := hashPassword(user.Password)
+	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
 		return jwtToken, err
 	}
@@ -76,11 +68,6 @@ func (u *AuthUsecase) Signup(user *models.Auth) (string, error) {
 
 	jwtToken, err = utils.CreateJWTToken(&newUser)
 	return jwtToken, err
-}
-
-func hashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	return string(bytes), err
 }
 
 func (u *AuthUsecase) CheckLogin(tokenString string) (*models.Auth, error) {

@@ -2,6 +2,7 @@ package utils
 
 import (
 	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 	"todolist/app/models"
 	"time"
 	"regexp"
@@ -22,6 +23,11 @@ func IsValidEmail(email string) bool {
 	const emailPattern = `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
 	re := regexp.MustCompile(emailPattern)
 	return re.MatchString(email)
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(bytes), err
 }
 
 func CreateJWTToken(user *models.Auth) (string, error) {
