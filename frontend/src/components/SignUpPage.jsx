@@ -3,11 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { signup } from '../api/authApi';
 import useForm from '../hooks/useForm';
 import { validateEmail } from '../utils/utils';
+import { useAuth } from '../contexts/AuthContext';
 
 function SignUpPage() {
 	const [loginInfo, handleChange, resetForm] = useForm({ firstName: '', lastName: '', email: '', password: '', passwordConfirmation: '' });
 	const [error, setError] = useState(null);
 	const navigate = useNavigate();
+	const { setUser } = useAuth();
 
 	const handleSubmit = async () => {
 		setError(null);
@@ -34,8 +36,10 @@ function SignUpPage() {
 		}
 		try {
 			const response = await signup(loginInfo);
+			setUser(response);
 		} catch (err) {
 			setError(err.message);
+			return;
 		}
 		resetForm();
 		navigate("/");

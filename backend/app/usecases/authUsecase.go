@@ -35,41 +35,43 @@ func (u *AuthUsecase) Login(user *models.Auth) (string, *models.Auth, error) {
 	return jwtToken, dbUser, err
 }
 
-func (u *AuthUsecase) Signup(user *models.Auth) (string, error) {
+func (u *AuthUsecase) Signup(user *models.Auth) (string, *models.Auth, error) {
 	jwtToken := ""
 
 	if (user.FirstName == "" || user.LastName == "" || user.Email == "" || user.Password == "" || user.PasswordConfirmation == "") {
-		return jwtToken, errors.New("Please fill out all fields!")
+		return jwtToken, nil, errors.New("Please fill out all fields!")
 	}
 	if (!utils.IsValidEmail(user.Email)) {
-		return jwtToken, errors.New("Please enter a valid email address!")
+		return jwtToken, nil, errors.New("Please enter a valid email address!")
 	}
 	if (len(user.Password) < 8) {
-		return jwtToken, errors.New("Password must be at least 8 characters long!")
+		return jwtToken, nil, errors.New("Password must be at least 8 characters long!")
 	}
 	if (user.Password != user.PasswordConfirmation) {
-		return jwtToken, errors.New("Passwords do not match!")
+		return jwtToken, nil, errors.New("Passwords do not match!")
 	}
 
 	hashedPassword, err := utils.HashPassword(user.Password)
 	if err != nil {
-		return jwtToken, err
+		return jwtToken, nil, err
 	}
 
-	newUser := models.Auth{
+	newUser := &models.Auth{
 		FirstName: user.FirstName,
 		LastName: user.LastName,
 		Email: user.Email,
 		PasswordHash: hashedPassword,
 	}
 
-	err = u.AuthRepository.CreateUser(&newUser)
+	err = u.AuthRepository.CreateUser(newUser)
 	if (err != nil) {
-		return jwtToken, err
+		return jwtToken, nil, err
 	}
 
-	jwtToken, err = utils.CreateJWTToken(&newUser)
-	return jwtToken, err
+	jwtToken, err = utils.CreateJWTToken(newUser)
+	newUser.ID = 0
+	newUser.PasswordHash = ""
+	return jwtToken, newUser, err
 }
 
 func (u *AuthUsecase) CheckLogin(tokenString string) (*models.Auth, error) {
