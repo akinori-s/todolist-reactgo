@@ -11,7 +11,10 @@ function App() {
 		async function getTodos() {
 			try {
 				const data = await getTodoList();
-				setTodos(data);
+				if (data)
+					setTodos(data);
+				else
+					setTodos([]);
 			} catch (error) {
 				console.error("Failed to fetch todos:", error);
 			}

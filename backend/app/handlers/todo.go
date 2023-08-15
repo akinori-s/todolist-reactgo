@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"todolist/app/models"
 	"todolist/app/repositories"
+	"todolist/app/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -19,7 +20,17 @@ func NewTodoHandler(todoRepository repositories.TodoRepository) *TodoHandler {
 }
 
 func (h *TodoHandler) GetTodos(c *gin.Context) {
-	todos, err := h.TodoRepository.GetTodos()
+	tokenString, err := c.Cookie("token")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	user, err := utils.ParseJWTTokenToUser(tokenString)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	todos, err := h.TodoRepository.GetTodosByUserID(user.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -28,12 +39,23 @@ func (h *TodoHandler) GetTodos(c *gin.Context) {
 }
 
 func (h *TodoHandler) AddTodo(c *gin.Context) {
+	tokenString, err := c.Cookie("token")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	user, err := utils.ParseJWTTokenToUser(tokenString)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
 	var todo models.Todo
 	if err := c.BindJSON(&todo); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	err := h.TodoRepository.AddTodo(&todo)
+	todo.UserID = user.ID
+	err = h.TodoRepository.AddTodo(&todo)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -42,12 +64,22 @@ func (h *TodoHandler) AddTodo(c *gin.Context) {
 }
 
 func (h *TodoHandler) DeleteTodo(c *gin.Context) {
+	tokenString, err := c.Cookie("token")
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	user, err := utils.ParseJWTTokenToUser(tokenString)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
 		return
 	}
-	err = h.TodoRepository.DeleteTodo(id)
+	err = h.TodoRepository.DeleteTodo(user.ID, id)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -56,9 +88,14 @@ func (h *TodoHandler) DeleteTodo(c *gin.Context) {
 }
 
 func (h *TodoHandler) UpdateTodo(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
+	tokenString, err := c.Cookie("token")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	user, err := utils.ParseJWTTokenToUser(tokenString)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
 	var updatedTodo models.Todo
@@ -66,7 +103,7 @@ func (h *TodoHandler) UpdateTodo(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	err = h.TodoRepository.UpdateTodo(&updatedTodo, id)
+	err = h.TodoRepository.UpdateTodo(&updatedTodo, user.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

@@ -1,9 +1,3 @@
-CREATE TABLE todos (
-	ID SERIAL PRIMARY KEY,
-	Task VARCHAR(255) NOT NULL,
-	Status BOOLEAN NOT NULL
-);
-
 CREATE TABLE users (
 	ID SERIAL PRIMARY KEY,
 	FirstName VARCHAR(50) NOT NULL CHECK (FirstName <> ''),
@@ -12,6 +6,15 @@ CREATE TABLE users (
 	Password_hash CHAR(60) NOT NULL CHECK (Password_hash <> '')
 );
 
-INSERT INTO todos (Task, Status) VALUES ('Complete the Docker setup', false);
-INSERT INTO todos (Task, Status) VALUES ('Learn more about PostgreSQL', false);
-INSERT INTO todos (Task, Status) VALUES ('Integrate database with Go application', true);
+CREATE TABLE todos (
+	ID SERIAL PRIMARY KEY,
+	USER_ID INTEGER NOT NULL REFERENCES users (ID) ON DELETE CASCADE,
+	Task VARCHAR(255) NOT NULL,
+	Status BOOLEAN NOT NULL
+);
+
+INSERT INTO users (FirstName, LastName, Email, Password_hash) VALUES ('First', 'Last', 'first@last.com', '$2a$10$KbD6B.lSAx6gW0IEnRjmVu3XqA8/5nwUhpmSl0HmPlW2I7F/sME7G');
+
+INSERT INTO todos (USER_ID, Task, Status) VALUES (1, 'Complete the Docker setup', false);
+INSERT INTO todos (USER_ID, Task, Status) VALUES (1, 'Learn more about PostgreSQL', false);
+INSERT INTO todos (USER_ID, Task, Status) VALUES (1, 'Integrate database with Go application', true);

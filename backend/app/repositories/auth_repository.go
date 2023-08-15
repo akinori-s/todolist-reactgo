@@ -30,7 +30,8 @@ func (r *AuthRepository) GetUserByEmail(email string) (*models.Auth, error) {
 }
 
 func (r *AuthRepository) CreateUser(user *models.Auth) error {
-	query := "INSERT INTO users (FirstName, LastName, Email, Password_hash) VALUES ($1, $2, $3, $4)"
-	_, err := r.DB.Exec(query, user.FirstName, user.LastName, user.Email, user.PasswordHash)
+	query := "INSERT INTO users (FirstName, LastName, Email, Password_hash) VALUES ($1, $2, $3, $4) RETURNING ID"
+	row := r.DB.QueryRow(query, user.FirstName, user.LastName, user.Email, user.PasswordHash)
+	err := row.Scan(&user.ID)
 	return err
 }
